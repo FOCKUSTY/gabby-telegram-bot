@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: false
+  workerd: false
+permissions:
+  "@prisma/engines":
+    build: true
+  prisma:
+    build: true
+    skills: true

@@ -1,0 +1,76 @@
+generator client {
+  provider               = "prisma-client"
+  output                 = "./generated"
+  moduleFormat           = "cjs"
+  generatedFileExtension = "ts"
+  compilerBuild          = "fast"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String @id @default(uuid(7))
+  telegramId String @unique
+  nickname   String?
+
+  adminId String?
+  admin Admin?
+
+  userTopics UserTopic[]
+  settings   UserSettings?
+}
+
+model Admin {
+  id String @id @default(uuid(7))
+  userId String @unique
+
+  level Int @default(1)
+
+  user User @relation(fields: [userId], references: [id])
+
+  adminTopics AdminTopic[]
+}
+
+model UserSettings {
+  id   String @id @default(uuid(7))
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  autoEnterTopic Boolean @default(false)
+}
+
+model Topic {
+  id         String @id @default(uuid(7))
+  telegramId String @unique
+
+  nameForUser       String? @map("name")
+  nameForAdmin      String?
+
+  userTopics UserTopic[]
+  adminTopics AdminTopic[]
+}
+
+model UserTopic {
+  topicId String @unique
+  userId  String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  active Boolean
+
+  @@id([userId, topicId])
+}
+
+model AdminTopic {
+  topicId String @unique
+  adminId String
+  
+  admin Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([adminId, topicId])
+}

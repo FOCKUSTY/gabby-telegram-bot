@@ -1,0 +1,14 @@
+dist/
+node_modules/
+
+generated/
+
+credentials.json
+
+.env
+.env.*
+!.env.example
+
+/.txt
+/.cache
+/cache/
