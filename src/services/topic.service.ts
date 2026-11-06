@@ -1,4 +1,6 @@
 import type { Context, TelegramId, TopicConfiguration } from "@/types";
+import { MS_PER_MINUTE } from "@/constants";
+import { Cached, CacheInvalidate } from "@/decorators";
 import { Prisma } from "@/database";
 import { fti } from "@/utils";
 import { env } from "@/env";
@@ -6,6 +8,7 @@ import { env } from "@/env";
 export class TopicService {
   public constructor(public readonly prisma: Prisma = new Prisma()) {}
 
+  @Cached({ ttlMs: 10 * MS_PER_MINUTE, maxOperations: 30 })
   public async find(userTelegramId: TelegramId) {
     const utid = fti(userTelegramId);
     const topics = await this.prisma.userTopic.findMany({
@@ -22,6 +25,7 @@ export class TopicService {
     return topics;
   }
 
+  @Cached({ ttlMs: 10 * MS_PER_MINUTE, maxOperations: 30 })
   public async findByTopicTelegramId(topicTelegramId: TelegramId) {
     const ttid = fti(topicTelegramId);
     const topic = await this.prisma.topic.findUnique({
@@ -54,6 +58,9 @@ export class TopicService {
     return userTopic;
   }
 
+  @CacheInvalidate({
+    all: true,
+  })
   public async create(userTelegramId: TelegramId, topicTelegramId: TelegramId) {
     const utid = fti(userTelegramId);
     const ttid = fti(topicTelegramId);

@@ -1,4 +1,6 @@
 import type { TelegramId, BaseUser, Topic, BaseUserTopic } from "@/types";
+import { MS_PER_MINUTE } from "@/constants";
+import { Cached, CacheInvalidate } from "@/decorators";
 import { Prisma } from "@/database";
 import { fti } from "@/utils";
 
@@ -23,6 +25,7 @@ export class UserService {
     public readonly topic: TopicService = new TopicService(),
   ) {}
 
+  @Cached({ ttlMs: 5 * MS_PER_MINUTE, maxOperations: 100 })
   public async findOrCreate(telegramId: TelegramId): Promise<BaseUser> {
     const tid = fti(telegramId);
     const user = await this.prisma.user.findUnique({
@@ -45,11 +48,13 @@ export class UserService {
     });
   }
 
+  @Cached({ ttlMs: 5 * MS_PER_MINUTE, maxOperations: 50 })
   public async getUserTopics(telegramId: TelegramId): Promise<Topic[]> {
     const user = await this.findOrCreate(telegramId);
     return user.userTopics.map(({ topic }) => topic);
   }
 
+  @Cached({ ttlMs: 5 * MS_PER_MINUTE, maxOperations: 50 })
   public async getActiveTopic(
     telegramId: TelegramId,
   ): Promise<BaseUserTopic | null> {
@@ -67,6 +72,13 @@ export class UserService {
     return userTopics[0];
   }
 
+  @CacheInvalidate({
+    keysOf: ([telegramId]) => [
+      `UserService:getActiveTopic:${telegramId}`,
+      `UserService:getUserTopics:${telegramId}`,
+      `UserService:findOrCreate:${telegramId}`,
+    ],
+  })
   public async toggleTopicActive(
     telegramId: TelegramId,
     topicId: string,
@@ -89,6 +101,7 @@ export class UserService {
           },
           where: {
             active: true,
+            userId: user.id,
           },
         });
 

@@ -1,10 +1,13 @@
 import type { UserConfiguration, TelegramId } from "@/types";
+import { MS_PER_MINUTE } from "@/constants";
+import { Cached, CacheInvalidate } from "@/decorators";
 import { Prisma } from "@/database";
 import { fti } from "@/utils";
 
 export class SettingsService {
   public constructor(public readonly prisma: Prisma = new Prisma()) {}
 
+  @Cached({ ttlMs: 10 * MS_PER_MINUTE, maxOperations: 30 })
   public async findOrCreateByUserId(userId: string) {
     const settings = await this.prisma.userSettings.findUnique({
       where: {
@@ -45,6 +48,9 @@ export class SettingsService {
     return this.findOrCreateByUserId(user.id);
   }
 
+  @CacheInvalidate({
+    keysOf: ([id]) => [`SettingsService:findOrCreateByUserId:${id}`],
+  })
   public update(id: string, configuration: UserConfiguration, value: unknown) {
     return this.prisma.userSettings.update({
       where: {

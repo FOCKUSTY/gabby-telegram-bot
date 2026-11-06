@@ -219,6 +219,9 @@ importers:
       grammy:
         specifier: ^1.46.0
         version: 1.46.0
+      proper-lockfile:
+        specifier: ^4.1.2
+        version: 4.1.2
     devDependencies:
       "@prisma/adapter-pg":
         specifier: ^7.10.1
@@ -232,6 +235,9 @@ importers:
       "@types/node":
         specifier: ^26.6.6
         version: 26.6.6
+      "@types/proper-lockfile":
+        specifier: ^4.1.4
+        version: 4.1.4
       dotenv:
         specifier: ^18.0.9
         version: 18.0.9
@@ -731,6 +737,12 @@ packages:
         integrity: sha512-fKVHpikPdg4GKks3JuLEhvwSyvwzF23hnabPy6DD8ljVbC7+6J5dQzdv4arV6jqq57djnMgs1HKBxX4P8aBI3A==,
       }
 
+  "@types/proper-lockfile@4.1.4":
+    resolution:
+      {
+        integrity: sha512-uo2ABllncSqg9F1D4nugVl9v93RmjxF6LJzQLMLDdPaXCUIDPeOJ21Gbqi43xNKzBi/WQ0Q0dICqufzQbMjipQ==,
+      }
+
   "@types/qs@6.15.1":
     resolution:
       {
@@ -747,6 +759,12 @@ packages:
     resolution:
       {
         integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==,
+      }
+
+  "@types/retry@0.12.5":
+    resolution:
+      {
+        integrity: sha512-3xSjTp3v03X/lSQLkczaN9UIEwJMoMCA1+Nb5HfbJEQWogdeQIyVtTvxPXDQjZ5zws8rFQfVfRdz03ARihPJgw==,
       }
 
   "@types/send@1.2.1":
@@ -2699,6 +2717,10 @@ snapshots:
       pg-protocol: 1.16.1
       pg-types: 2.2.0
 
+  "@types/proper-lockfile@4.1.4":
+    dependencies:
+      "@types/retry": 0.12.5
+
   "@types/qs@6.15.1": {}
 
   "@types/range-parser@1.2.7": {}
@@ -2706,6 +2728,8 @@ snapshots:
   "@types/react@19.3.0":
     dependencies:
       csstype: 3.2.3
+
+  "@types/retry@0.12.5": {}
 
   "@types/send@1.2.1":
     dependencies:

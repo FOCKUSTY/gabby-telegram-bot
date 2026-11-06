@@ -42,7 +42,7 @@ export class SettingsConversation implements Conversation {
       });
     }
 
-    const [_p1, _p2, configuration, value] = settingsCallback.split(":");
+    const [_p1, _p2, _p3, configuration, value] = settingsCallback.split(":");
     const configurationValid = this.validateConfiguration(configuration);
     if (!configurationValid) {
       throw new Error("...");

@@ -26,7 +26,7 @@ export class RenameTopicConversation implements Conversation {
     const textContext = await conversation.waitFor(":text");
     const text = textContext.msg.text;
     const name = text.trim();
-    if (name.length < 3 && name.length > 20) {
+    if (name.length < 3 || name.length > 20) {
       await sendOrEdit(context, "Название не подходит по длине", {
         conversation,
         edit: false,
