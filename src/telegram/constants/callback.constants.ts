@@ -3,14 +3,19 @@ export const CALLBACK = {
   MAIN_MENU: "main_menu",
 
   CHOOSE_TOPIC: {
-    PREFIX: "choose_prefix",
+    PREFIX: "choose_topic",
+    CLOSE: "choose_topic:close",
   },
 
   TOPIC: {
     PREFIX: "topic",
-    ENTER: "topic:enter",
-    RENAME: "topic:rename",
-    CHANGE: "topic:choose",
+    SETTINGS: {
+      PREFIX: "topic:settings",
+      RENAME: "topic:settings:rename",
+      CHANGE: "topic:settings:choose",
+      CREATE: "topic:settings:create",
+      ENTER: "settings:configuration:topic:enter",
+    },
   },
 
   SETTINGS: {

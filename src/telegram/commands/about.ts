@@ -15,27 +15,15 @@ const text = new StringBuilder()
   .newLine()
   .bold("Команды:")
   .newLine()
-  .code("/start")
-  .appendLine(" — запуск бота")
-  .code("/settings")
-  .appendLine(" — настройки")
-  .code("/open")
-  .appendLine(" — включить пересылку")
-  .code("/close")
-  .appendLine(" — выключить пересылку")
-  .code("/about")
-  .appendLine(" — эта справка")
+  .appendLine("/start — запуск бота")
+  .appendLine("/settings — настройки")
+  .appendLine("/open — включить пересылку")
+  .appendLine("/close — выключить пересылку")
+  .appendLine("/about — эта справка")
   .newLine()
   .italic("MIT © FOCKUSTY")
   .toString();
 
-/**
- * /about — краткая справка по боту.
- *
- * Замечание: `StringBuilder` формирует HTML-разметку,
- * поэтому в `sendOrEdit` должен быть включён `parse_mode: "HTML"`
- * (см. `src/telegram/utils/send-or-edit.ts`).
- */
 export const about = async (context: Context) => {
   return sendOrEdit(context, text, { session: context.session });
 };

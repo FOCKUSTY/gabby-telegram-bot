@@ -61,7 +61,11 @@ export class TopicService {
   @CacheInvalidate({
     all: true,
   })
-  public async create(userTelegramId: TelegramId, topicTelegramId: TelegramId) {
+  public async create(
+    userTelegramId: TelegramId,
+    topicTelegramId: TelegramId,
+    name?: string,
+  ) {
     const utid = fti(userTelegramId);
     const ttid = fti(topicTelegramId);
 
@@ -71,6 +75,7 @@ export class TopicService {
         topic: {
           create: {
             telegramId: ttid,
+            nameForUser: name,
           },
         },
         user: {
@@ -87,7 +92,11 @@ export class TopicService {
     return topic;
   }
 
-  public async createByContext(userTelegramId: TelegramId, context: Context) {
+  public async createByContext(
+    userTelegramId: TelegramId,
+    context: Context,
+    name?: string,
+  ) {
     const utid = fti(userTelegramId);
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { telegramId: utid },
@@ -98,7 +107,7 @@ export class TopicService {
     });
 
     const topicTelegramId = forumTopic.message_thread_id;
-    return this.create(utid, topicTelegramId);
+    return this.create(utid, topicTelegramId, name);
   }
 
   public update(id: string, configuration: TopicConfiguration, value: unknown) {

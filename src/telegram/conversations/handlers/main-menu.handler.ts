@@ -4,6 +4,8 @@ import { BaseHandler } from "./base-handler";
 import { ChooseTopicConversation } from "../choose-topic.conversation";
 import { sendOrEdit } from "@/telegram/utils";
 import { mainMenuKeyboard, settingsKeyboard } from "@/telegram/keyboards";
+import { RenameTopicConversation } from "../rename-topic.conversation";
+import { topicSettingsKeyboard } from "@/telegram/keyboards/topic-settings.keyboard";
 
 export class MainMenuHandler extends BaseHandler {
   public execute(): void {
@@ -22,15 +24,19 @@ export class MainMenuHandler extends BaseHandler {
   }
 
   private registerTopicActions() {
-    this.registry.exact(CALLBACK.TOPIC.ENTER, async () => {
-      // ...
+    this.registry.exact(CALLBACK.TOPIC.SETTINGS.ENTER, async (context) => {
+      await sendOrEdit(context, "Настройки топика", {
+        keyboard: topicSettingsKeyboard(),
+      });
+      await context.answerCallbackQuery();
     });
 
-    this.registry.exact(CALLBACK.TOPIC.RENAME, async () => {
-      // ...
+    this.registry.exact(CALLBACK.TOPIC.SETTINGS.RENAME, async (context) => {
+      await context.conversation.enter(RenameTopicConversation.name);
+      await context.answerCallbackQuery();
     });
 
-    this.registry.exact(CALLBACK.TOPIC.CHANGE, async (context) => {
+    this.registry.exact(CALLBACK.TOPIC.SETTINGS.CHANGE, async (context) => {
       await context.conversation.enter(ChooseTopicConversation.name);
       await context.answerCallbackQuery();
     });

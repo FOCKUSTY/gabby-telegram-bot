@@ -33,7 +33,12 @@ bot.start({
 
     listen();
   },
-  allowed_updates: ["message_reaction", "message", "edited_message"],
+  allowed_updates: [
+    "message_reaction",
+    "message",
+    "edited_message",
+    "callback_query",
+  ],
 });
 
 bot.catch((error) => {

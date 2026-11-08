@@ -3,7 +3,8 @@ import { UserService } from "@/services";
 import { getUserId } from "@/utils";
 import { CALLBACK } from "../constants";
 import { sendOrEdit } from "../utils";
-import { chooseTopicKeyboard } from "../keyboards";
+import { chooseTopicKeyboard, settingsKeyboard } from "../keyboards";
+import { registry } from "./handlers";
 
 export class ChooseTopicConversation implements Conversation {
   public constructor(private user: UserService = new UserService()) {}
@@ -26,14 +27,21 @@ export class ChooseTopicConversation implements Conversation {
     const keyboard = chooseTopicKeyboard(topics);
     await sendOrEdit(context, "Выберите топик", { keyboard, conversation });
 
-    const topicCallback = await this.waitForCallback(
+    const { data: topicCallback, callbackContext } = await this.waitForCallback(
       conversation,
       CALLBACK.CHOOSE_TOPIC.PREFIX,
     );
-    if (!topicCallback) {
-      await sendOrEdit(context, "Произошла ошибка, попробуйте ещё раз", {
+    if (topicCallback === CALLBACK.CHOOSE_TOPIC.CLOSE) {
+      await sendOrEdit(context, "Настройки", {
         conversation,
+        keyboard: settingsKeyboard(),
       });
+      return;
+    }
+
+    if (!topicCallback) {
+      await conversation.halt({ next: true });
+      await registry.dispatch(callbackContext);
       return;
     }
 
@@ -50,15 +58,15 @@ export class ChooseTopicConversation implements Conversation {
   private async waitForCallback(
     conversation: MyConversation,
     prefix: string,
-  ): Promise<string | null> {
+  ): Promise<{ data: string | null; callbackContext: Context }> {
     const callbackContext = await conversation.waitFor("callback_query:data");
     await callbackContext.answerCallbackQuery().catch(() => undefined);
 
     const data = callbackContext.callbackQuery?.data ?? null;
-    if (!data) return null;
-    if (data === CALLBACK.CANCEL) return null;
-    if (!data.startsWith(`${prefix}:`)) return null;
+    if (!data) return { data: null, callbackContext };
+    if (data === CALLBACK.CANCEL) return { data: null, callbackContext };
+    if (!data.startsWith(`${prefix}:`)) return { data: null, callbackContext };
 
-    return data;
+    return { data, callbackContext };
   }
 }
