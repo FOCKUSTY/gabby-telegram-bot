@@ -104,7 +104,7 @@ export class UserService {
 
     if (active === true) {
       return this.prisma.$transaction(async (tx) => {
-        tx.userTopic.updateMany({
+        await tx.userTopic.updateMany({
           data: {
             active: false,
           },
@@ -147,5 +147,18 @@ export class UserService {
       value,
     );
     return updated;
+  }
+
+  public async updateNickname(telegramId: TelegramId, nickname: string) {
+    const user = await this.findOrCreate(telegramId);
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        baseNickname: nickname,
+        nicknameForAdmin: user.nicknameForAdmin ?? nickname,
+      },
+    });
   }
 }

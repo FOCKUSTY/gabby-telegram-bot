@@ -13,7 +13,9 @@ datasource db {
 model User {
   id         String @id @default(uuid(7))
   telegramId String @unique
-  nickname   String?
+
+  baseNickname       String? @map("nickname")
+  nicknameForAdmin   String?
 
   adminId String?
   admin Admin?

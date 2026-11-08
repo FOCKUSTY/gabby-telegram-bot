@@ -1,6 +1,6 @@
 import type { UserSettings } from "@/types";
 import { InlineKeyboard } from "grammy";
-import { iconInText } from "../utils";
+import { buttonStyle } from "../utils";
 import { CALLBACK } from "../constants";
 import { toMainMenu } from "./main-menu.keyboard";
 
@@ -13,8 +13,15 @@ export const configurationsKeyboard = (settings: UserSettings) => {
   );
 
   keyboard
-    .text("Автоматически входить в чат", id)
-    .text(iconInText("", settings.sendEnabled), id)
+    .text("Отправлять сообщения", id)
+    .style(buttonStyle(settings.sendEnabled))
+    .row();
+
+  keyboard
+    .text(
+      "Изменить никнейм (публичный)",
+      CALLBACK.SETTINGS.CONFIGURATION.USER.CHANGE_NICKNAME,
+    )
     .row();
 
   keyboard.text("<= Отмена", CALLBACK.SETTINGS.CONFIGURATION.USER.CANCEL).row();

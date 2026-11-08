@@ -13,6 +13,7 @@ import {
 } from "../constants";
 import { sendOrEdit } from "../utils";
 import { configurationsKeyboard, settingsKeyboard } from "../keyboards";
+import { registry } from "./handlers";
 
 export class SettingsConversation implements Conversation {
   public constructor(
@@ -30,15 +31,26 @@ export class SettingsConversation implements Conversation {
       keyboard: configurationsKeyboard(settings),
     });
 
-    const settingsCallback = await this.waitForCallback(
-      conversation,
-      CALLBACK.SETTINGS.CONFIGURATION.PREFIX,
-    );
-    if (!settingsCallback) {
+    const { data: settingsCallback, callbackContext } =
+      await this.waitForCallback(
+        conversation,
+        CALLBACK.SETTINGS.CONFIGURATION.PREFIX,
+      );
+
+    if (settingsCallback === CALLBACK.SETTINGS.CONFIGURATION.USER.CANCEL) {
       return sendOrEdit(context, "Изменения настройки было отклонено", {
         keyboard: settingsKeyboard(),
         conversation,
       });
+    }
+
+    if (
+      !settingsCallback ||
+      settingsCallback === CALLBACK.SETTINGS.CONFIGURATION.USER.CHANGE_NICKNAME
+    ) {
+      await conversation.halt({ next: true });
+      await registry.dispatch(callbackContext);
+      return;
     }
 
     const [_p1, _p2, _p3, configuration, value] = settingsCallback.split(":");
@@ -78,15 +90,15 @@ export class SettingsConversation implements Conversation {
   private async waitForCallback(
     conversation: MyConversation,
     prefix: string,
-  ): Promise<string | null> {
+  ): Promise<{ data: string | null; callbackContext: Context }> {
     const callbackContext = await conversation.waitFor("callback_query:data");
     await callbackContext.answerCallbackQuery().catch(() => undefined);
 
     const data = callbackContext.callbackQuery?.data ?? null;
-    if (!data) return null;
-    if (data === CALLBACK.SETTINGS.CONFIGURATION.USER.CANCEL) return null;
-    if (!data.startsWith(`${prefix}:`)) return null;
+    if (!data) return { data: null, callbackContext };
+    if (data === CALLBACK.CANCEL) return { data: null, callbackContext };
+    if (!data.startsWith(`${prefix}:`)) return { data: null, callbackContext };
 
-    return data;
+    return { data, callbackContext };
   }
 }

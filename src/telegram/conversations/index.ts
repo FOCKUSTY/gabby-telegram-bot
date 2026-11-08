@@ -7,6 +7,7 @@ import { ChooseTopicConversation } from "./choose-topic.conversation";
 import { SettingsConversation } from "./settings.conversation";
 import { RenameTopicConversation } from "./rename-topic.conversation";
 import { CreateTopicConversation } from "./create-topic.conversation";
+import { ChangeNicknameConversation } from "./change-nickname.conversation";
 
 export const CONVERSATIONS: {
   name: string;
@@ -16,6 +17,7 @@ export const CONVERSATIONS: {
   SettingsConversation,
   RenameTopicConversation,
   CreateTopicConversation,
+  ChangeNicknameConversation,
 ].map((conversationClass) => ({
   name: conversationClass.name,
   conversation: new conversationClass(),

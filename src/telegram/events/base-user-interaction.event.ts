@@ -152,7 +152,7 @@ export abstract class BaseUserInteractionEventWithText extends BaseUserInteracti
 
     builder.appendLine(this.getMessageText(context));
     builder.appendRawLine(
-      `<blockquote>От <b>${user.nickname ?? user.id}</b></blockquote>`,
+      `<blockquote>От <b>${user.baseNickname ?? user.id}</b></blockquote>`,
     );
 
     return builder.toString();

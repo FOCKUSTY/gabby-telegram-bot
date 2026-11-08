@@ -9,3 +9,7 @@ export const getIcon = (value: boolean) => {
 export const iconInText = (text: string, value: boolean) => {
   return `${text} ${getIcon(value)}`;
 };
+
+export const buttonStyle = (value: boolean) => {
+  return value ? "success" : "danger";
+};

@@ -69,27 +69,39 @@ export class TopicService {
     const utid = fti(userTelegramId);
     const ttid = fti(topicTelegramId);
 
-    const topic = this.prisma.userTopic.create({
-      data: {
-        active: true,
-        topic: {
-          create: {
-            telegramId: ttid,
-            nameForUser: name,
-          },
-        },
-        user: {
-          connect: {
+    return this.prisma.$transaction(async (tx) => {
+      await this.prisma.userTopic.updateMany({
+        where: {
+          user: {
             telegramId: utid,
           },
+          active: true,
         },
-      },
-      include: {
-        topic: true,
-      },
-    });
+        data: {
+          active: false,
+        },
+      });
 
-    return topic;
+      return await this.prisma.userTopic.create({
+        data: {
+          active: true,
+          topic: {
+            create: {
+              telegramId: ttid,
+              nameForUser: name,
+            },
+          },
+          user: {
+            connect: {
+              telegramId: utid,
+            },
+          },
+        },
+        include: {
+          topic: true,
+        },
+      });
+    });
   }
 
   public async createByContext(

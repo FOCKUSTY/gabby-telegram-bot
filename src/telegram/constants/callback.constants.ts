@@ -29,6 +29,7 @@ export const CALLBACK = {
         PREFIX: "settings:configuration:user",
         ENTER: "settings:configuration:user:enter",
         CANCEL: "settings:configuration:user:cancel",
+        CHANGE_NICKNAME: "settings:configuration:user:nickname",
         CHANGE: (configuration: string, value: string) => {
           return `settings:configuration:user:${configuration}:${value}`;
         },
