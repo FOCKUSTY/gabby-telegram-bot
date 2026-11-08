@@ -1,6 +1,7 @@
 import { Context, MyConversation, SessionData } from "@/types";
 import { InlineKeyboard } from "grammy";
 import { extractChat, extractSession } from "./extract";
+import { PARSE_MODE } from "../constants";
 
 export const sendOrEdit = async (
   context: Context,
@@ -23,7 +24,7 @@ export const sendOrEdit = async (
   const reply = async () => {
     const msg = await context.reply(text, {
       reply_markup: keyboard,
-      // parse_mode: PARSE_MODE
+      parse_mode: PARSE_MODE,
     });
 
     if (edit) {
@@ -44,7 +45,7 @@ export const sendOrEdit = async (
     await context.api
       .editMessageText(chatId, lastMessageId, text, {
         reply_markup: keyboard,
-        // parse_mode: PARSE_MODE,
+        parse_mode: PARSE_MODE,
       })
       .catch(reply);
 
