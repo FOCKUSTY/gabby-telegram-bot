@@ -1,7 +1,7 @@
-export const AVAILABLE_USER_CONFIGURATIONS = ["autoEnterTopic"] as const;
+export const AVAILABLE_USER_CONFIGURATIONS = ["sendEnabled"] as const;
 
 export const USER_CONFIGURATION_TRANSFORMERS = {
-  autoEnterTopic: (value: string) => value === "true",
+  sendEnabled: (value: string) => value === "true",
 };
 
 export const AVAILABLE_TOPIC_CONFIGURATIONS = ["name"] as const;

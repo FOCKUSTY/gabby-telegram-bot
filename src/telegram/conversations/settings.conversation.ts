@@ -4,7 +4,7 @@ import type {
   Conversation,
   MyConversation,
 } from "@/types";
-import { SettingsService, UserService } from "@/services";
+import { SettingsService } from "@/services";
 import { getUserId } from "@/utils";
 import {
   AVAILABLE_USER_CONFIGURATIONS,
@@ -16,7 +16,6 @@ import { configurationsKeyboard, settingsKeyboard } from "../keyboards";
 
 export class SettingsConversation implements Conversation {
   public constructor(
-    private readonly user: UserService = new UserService(),
     private readonly settings: SettingsService = new SettingsService(),
   ) {}
 

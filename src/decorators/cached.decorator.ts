@@ -10,7 +10,7 @@ export interface CachedOptions {
   skipRead?: (args: unknown[]) => boolean;
 }
 
-const defaultCache = new MemoryCache();
+export const defaultCache = new MemoryCache();
 
 const serializeArg = (value: unknown): string => {
   if (value === null || value === undefined) return String(value);

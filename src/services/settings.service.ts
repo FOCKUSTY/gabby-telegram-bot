@@ -1,6 +1,6 @@
 import type { UserConfiguration, TelegramId } from "@/types";
 import { MS_PER_MINUTE } from "@/constants";
-import { Cached, CacheInvalidate } from "@/decorators";
+import { Cached, CacheInvalidate, defaultCache } from "@/decorators";
 import { Prisma } from "@/database";
 import { fti } from "@/utils";
 
@@ -51,8 +51,12 @@ export class SettingsService {
   @CacheInvalidate({
     keysOf: ([id]) => [`SettingsService:findOrCreateByUserId:${id}`],
   })
-  public update(id: string, configuration: UserConfiguration, value: unknown) {
-    return this.prisma.userSettings.update({
+  public async update(
+    id: string,
+    configuration: UserConfiguration,
+    value: unknown,
+  ) {
+    const updated = await this.prisma.userSettings.update({
       where: {
         id,
       },
@@ -61,5 +65,7 @@ export class SettingsService {
         [configuration]: value,
       },
     });
+
+    return updated;
   }
 }

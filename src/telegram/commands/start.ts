@@ -23,8 +23,15 @@ export const start = async (context: Context) => {
 
   const topic = await userService.getActiveTopic(id);
   if (!topic) {
+    await context.conversation.enter(ChooseTopicConversation.name);
     return;
   }
 
-  await context.conversation.enter(ChooseTopicConversation.name);
+  return sendOrEdit(
+    context,
+    "Топик открыт, сообщения пересылаются автоматически",
+    {
+      session: context.session,
+    },
+  );
 };

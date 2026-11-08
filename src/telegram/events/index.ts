@@ -5,7 +5,7 @@ import { MessageEvent } from "./message.event";
 import { EditEvent } from "./edit.event";
 import { ReactEvent } from "./react.event";
 
-const EVENTS = [MessageEvent, EditEvent, ReactEvent].map(
+const EVENTS = [MessageEvent, EditEvent /* ReactEvent */].map(
   (eventClass) => new eventClass(),
 );
 

@@ -1,13 +1,21 @@
-import type { TelegramId, BaseUser, Topic, BaseUserTopic } from "@/types";
+import type {
+  TelegramId,
+  BaseUser,
+  Topic,
+  BaseUserTopic,
+  UserConfiguration,
+} from "@/types";
 import { MS_PER_MINUTE } from "@/constants";
 import { Cached, CacheInvalidate } from "@/decorators";
 import { Prisma } from "@/database";
 import { fti } from "@/utils";
 
 import { TopicService } from "./topic.service";
+import { SettingsService } from "./settings.service";
 
 export class UserService {
   private readonly _include = {
+    settings: true,
     userTopics: {
       include: {
         topic: true,
@@ -23,6 +31,7 @@ export class UserService {
   public constructor(
     public readonly prisma: Prisma = new Prisma(),
     public readonly topic: TopicService = new TopicService(),
+    public readonly settings: SettingsService = new SettingsService(),
   ) {}
 
   @Cached({ ttlMs: 5 * MS_PER_MINUTE, maxOperations: 100 })
@@ -120,5 +129,23 @@ export class UserService {
       data: { active },
       include: this._include.userTopics.include,
     });
+  }
+
+  @CacheInvalidate({
+    keysOf: ([telegramId]) => [`UserService:findOrCreate:${telegramId}`],
+  })
+  public async updateUserSettings(
+    telegramId: TelegramId,
+    configuration: UserConfiguration,
+    value: unknown,
+  ) {
+    const user = await this.findOrCreate(telegramId);
+    const settings = await this.settings.findOrCreateByUserId(user.id);
+    const updated = await this.settings.update(
+      settings.id,
+      configuration,
+      value,
+    );
+    return updated;
   }
 }

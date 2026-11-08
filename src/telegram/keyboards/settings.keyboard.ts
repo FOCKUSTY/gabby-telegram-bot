@@ -7,14 +7,14 @@ import { toMainMenu } from "./main-menu.keyboard";
 export const configurationsKeyboard = (settings: UserSettings) => {
   const keyboard = new InlineKeyboard();
 
+  const id = CALLBACK.SETTINGS.CONFIGURATION.USER.CHANGE(
+    "sendEnabled",
+    `${!settings.sendEnabled}`,
+  );
+
   keyboard
-    .text(
-      iconInText("Автоматически входить в чат", settings.autoEnterTopic),
-      CALLBACK.SETTINGS.CONFIGURATION.USER.CHANGE(
-        "autoEnterTopic",
-        `${!settings.autoEnterTopic}`,
-      ),
-    )
+    .text("Автоматически входить в чат", id)
+    .text(iconInText("", settings.sendEnabled), id)
     .row();
 
   keyboard.text("<= Отмена", CALLBACK.SETTINGS.CONFIGURATION.USER.CANCEL).row();

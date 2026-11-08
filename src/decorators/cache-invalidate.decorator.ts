@@ -1,4 +1,5 @@
-import { BaseCache, MemoryCache } from "@/cache";
+import { BaseCache } from "@/cache";
+import { defaultCache } from "./cached.decorator";
 
 export interface CacheInvalidateOptions {
   cache?: BaseCache;
@@ -6,8 +7,6 @@ export interface CacheInvalidateOptions {
   keysOf?: (args: unknown[]) => string[];
   all?: boolean;
 }
-
-const defaultCache = new MemoryCache();
 
 export function CacheInvalidate(
   options: CacheInvalidateOptions = {},

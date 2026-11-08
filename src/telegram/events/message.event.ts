@@ -17,6 +17,10 @@ export class MessageEvent extends BaseUserInteractionEventWithText {
     topic,
     user,
   }: InteractionData) {
+    if (user.settings?.sendEnabled === false) {
+      return;
+    }
+
     await this.sendMessage(
       { context, topic, user },
       env.SUPER_GROUP_TELEGRAM_ID,
@@ -33,6 +37,12 @@ export class MessageEvent extends BaseUserInteractionEventWithText {
     user,
     topic,
   }: InteractionData) {
+    const sendTo = await this.user.findOrCreate(topic.user.telegramId);
+    if (sendTo.settings?.sendEnabled === false) {
+      await context.reply("! Этого пользователя закрыт топик");
+      return;
+    }
+
     await this.sendMessage({ context, topic, user }, topic.user.telegramId);
   }
 
