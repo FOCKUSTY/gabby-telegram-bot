@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node ./dist/app.js",
+    "build": "tsc && tsc-alias",
     "dev": "ts-node ./src/app.ts"
   },
   "keywords": [],
